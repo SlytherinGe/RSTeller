@@ -12,7 +12,7 @@ Abundant, well-annotated multimodal data in remote sensing are pivotal for align
 
 ### 🤖 Dataset Inspection
 
-We provide a set of samples for quick evaluation. Image patch, raw OSM tags and the captions are provided for each image.
+We provide a set of samples for quick evaluation. Image patch, raw OSM tags and the captions are provided.
 
 ![dataset inspection](assets/dataset_inspection.png)
 
@@ -40,7 +40,13 @@ The dataset is wrapped in webdataset tar shards for easy access and efficient da
 
 #### Download
 
-The dataset is available on [huggingface](https://huggingface.co/datasets/SlytherinGe/RSTeller).
+The dataset is available on [huggingface](https://huggingface.co/datasets/SlytherinGe/RSTeller). You can download the dataset using the following command with the [huggingface-cli](https://hf-mirror.com/docs/huggingface_hub/guides/download#download-from-the-cli):
+
+```bash
+huggingface-cli download --repo-type dataset --resume-download SlytherinGe/RSTeller --local-dir LOCAL_PATH/TO/YOUR/DATA
+```
+
+If your are trying to download the dataset from mainland China, a [mirror endpoint](https://hf-mirror.com/) is recommended for faster download speeds.
 
 #### Requirements
 
@@ -96,3 +102,43 @@ The "metadata" field contains the unique identifier of the image patch and the c
 - Task 3: Caption revision
 
 In RSTeller dataset, each image patch has one Task 1 or Task 2 caption, and multiple Task 3 captions, ranging from 1 to 4 captions per image patch. The Task 3 caption provides more diverse expressions of the same image patch, which can be useful for training a robust model.
+
+#### Data Loading
+
+To load the dataset, you can use the following code:
+
+```python
+import webdataset as wds
+import random
+
+def preprocess_img(img):
+    # preprocess the image
+    return img
+
+def text_tokenize(text):
+    # tokenize the text
+    return text
+
+input_shards = "PATH/TO/RSTeller/Patches{0000..0239}.tar"
+
+pipeline = [wds.SimpleShardList(input_shards),
+            wds.shuffle,
+            wds.decode("pil"),
+            wds.rename(image="jpg", text="txt"),
+            # randomly sample one caption per image patch
+            wds.map_dict(text=lambda x: x.split('\n')[random.randint(0, len(x.split('\n'))-1)])
+            wds.map_dict(image=preprocess_img, text=text_tokenize),
+            wds.to_tuple("image", "text")]
+
+dataset = wds.WebDataset(pipeline)
+```
+
+
+The `shuffle` function is used to shuffle the dataset. The `decode` function is used to decode the image patches. The `to_tuple` function is used to convert the image patches and captions to tuples. The first element of the tuple is the image patch, and the second element is the sampled caption. The `map_dict` function is used to preprocess the image and tokenize the text. The `rename` function is used to rename the image and text files to `jpg` and `txt` respectively
+
+You can then iterate over the dataset using a for loop:
+
+```python
+for image, caption in dataset:
+    # process the image and caption
+```

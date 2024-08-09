@@ -4,6 +4,10 @@
 Vision-Language Dataset for Remote Sensing
 </div>
 
+### News
+
+- **2024/08/09**: We are uploading the dataset to the Hugging Face Datasets Hub.
+
 ### ⚡ Introduction
 
 Abundant, well-annotated multimodal data in remote sensing are pivotal for aligning complex visual remote sensing (RS) scenes with human language, enabling the development of specialized vision language models across diverse RS interpretation tasks. However, annotating RS images with rich linguistic semantics at scale demands expertise in RS and substantial human labor, making it costly and often impractical. 

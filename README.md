@@ -25,7 +25,8 @@ We provide a set of samples for quick evaluation. Image patch, raw OSM tags and 
 ### 💡 Dataset Statistics
 
 
-<div align="center">
+<center>
+
 | **Attribute**                   | **Value**                                              |
 |---------------------------------|--------------------------------------------------------|
 | Number of Images                | 1,197,190                                              |
@@ -37,7 +38,8 @@ We provide a set of samples for quick evaluation. Image patch, raw OSM tags and 
 | Image Capture Date Range        | August 1, 2021 - November 26, 2022                     |
 | Geographic Coverage             | United States                                          |
 | Image Acquisition Platform      | Aircraft                                               |
-</div>
+
+</center>
 
 The geographical coverage of the dataset is limited to the United States due to the availability of NAIP imagery. 
 

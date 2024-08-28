@@ -1,11 +1,13 @@
 <div align="center">
 
-### [RSTeller: Scaling Up Visual Language Modeling in Remote Sensing with Rich Linguistic Semantics from Openly Available Data and Large Language Models](https://github.com/SlytherinGe/RSTeller)
+### [RSTeller: Scaling Up Visual Language Modeling in Remote Sensing with Rich Linguistic Semantics from Openly Available Data and Large Language Models](https://arxiv.org/abs/2408.14744)
 Vision-Language Dataset for Remote Sensing
 </div>
 
-### News
+### 🎉 News
 
+- **2022/08/28**: A preprint version of our paper is now available on [arXiv](https://arxiv.org/abs/2408.14744).
+- **2022/08/27**: The dataset is now available on the [Hugging Face Datasets Hub](https://huggingface.co/datasets/SlytherinGe/RSTeller).
 - **2024/08/09**: We are uploading the dataset to the Hugging Face Datasets Hub.
 
 ### ⚡ Introduction
@@ -145,4 +147,20 @@ You can then iterate over the dataset using a for loop:
 ```python
 for image, caption in dataset:
     # process the image and caption
+```
+
+### Citation
+
+If you find the dataset and our paper useful, please consider citing our paper:
+
+```bibtex
+@misc{ge2024rstellerscalingvisuallanguage,
+      title={RSTeller: Scaling Up Visual Language Modeling in Remote Sensing with Rich Linguistic Semantics from Openly Available Data and Large Language Models}, 
+      author={Junyao Ge and Yang Zheng and Kaitai Guo and Jimin Liang},
+      year={2024},
+      eprint={2408.14744},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2408.14744}, 
+}
 ```

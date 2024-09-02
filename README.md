@@ -75,7 +75,6 @@ The dataset is arranged in the following way:
 ├── RSTeller
 │   │── Patches0000.tar
 |   |   |── 607.jpg
-|   |   |── 607.txt
 |   |   |── 607.json
 |   |   |──...
 │   ├── Patches0001.tar
@@ -83,7 +82,7 @@ The dataset is arranged in the following way:
 │   ├── Patches0240.tar
 ```
 
-The `Patches0000.tar` file contains the image patches, metadata and their captions. Each image patch is named as `607.jpg`, where `607` is the unique identifier of the image patch. The corresponding metadata and captions are stored in `607.json`. If you only want to use captions, the `.txt` file can be used instead. Each caption is stored as an individual line of text in the `.txt` file. 
+The `Patches0000.tar` file contains the image patches, metadata and their captions. Each image patch is named as `607.jpg`, where `607` is the unique identifier of the image patch. The corresponding metadata and captions are stored in `607.json`.
 
 A sample json file is shown below:
 
@@ -130,18 +129,30 @@ def text_tokenize(text):
     # tokenize the text
     return text
 
-input_shards = "PATH/TO/RSTeller/Patches{0000..0239}.tar"
+input_shards = "/PATH/TO/RSTeller/JPG/train-{000000..000239}.tar"
 
 pipeline = [wds.SimpleShardList(input_shards),
-            wds.shuffle,
+            wds.shuffle(100),
+            wds.tarfile_to_samples(),
             wds.decode("pil"),
-            wds.rename(image="jpg", text="txt"),
+            wds.rename(image="jpg", text="json"),
             # randomly sample one caption per image patch
-            wds.map_dict(text=lambda x: x.split('\n')[random.randint(0, len(x.split('\n'))-1)])
+            wds.map_dict(text=lambda x: random.choice(x['annotations'])['text']),
             wds.map_dict(image=preprocess_img, text=text_tokenize),
-            wds.to_tuple("image", "text")]
+            wds.shuffle(1000),
+            wds.to_tuple("image", "text")
+            ]
 
-dataset = wds.WebDataset(pipeline)
+dataset = wds.DataPipeline(*pipeline)
+dataloader = wds.WebLoader(
+    dataset,
+    batch_size=None,
+    shuffle=False
+)
+
+it = iter(dataloader)
+example = next(it)
+print(example)
 ```
 
 

@@ -155,15 +155,7 @@ example = next(it)
 print(example)
 ```
 
-
 The `shuffle` function is used to shuffle the dataset. The `decode` function is used to decode the image patches. The `to_tuple` function is used to convert the image patches and captions to tuples. The first element of the tuple is the image patch, and the second element is the sampled caption. The `map_dict` function is used to preprocess the image and tokenize the text. The `rename` function is used to rename the image and text files to `jpg` and `txt` respectively
-
-You can then iterate over the dataset using a for loop:
-
-```python
-for image, caption in dataset:
-    # process the image and caption
-```
 
 ### 📄 Citation
 

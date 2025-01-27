@@ -24,7 +24,7 @@ import gc
 from ..annotation.utils.utils import get_area_nonearea_from_response_with_db
 
 # create osm_data table
-# TYPE: 0: background, 1: area, 2: nonearea, 3: landuse
+# TYPE: 0: background, 1: area, 2: nonearea
 OSM_DATA_TABLE_INIT_CMD = """CREATE TABLE IF NOT EXISTS osm_data (
                             ID          INTEGER     PRIMARY KEY AUTOINCREMENT,
                             PATCH_NAME  TEXT        NOT NULL,
@@ -41,13 +41,6 @@ OSM_BACKGROUND_TABLE_INIT_CMD = """CREATE TABLE IF NOT EXISTS osm_background (
                                     TAGS        TEXT        NOT NULL
                                     )"""
                                     
-# create osm_landuse table
-OSM_LANDUSE_TABLE_INIT_CMD = """CREATE TABLE IF NOT EXISTS osm_landuse (
-                                    ID          INTEGER PRIMARY KEY AUTOINCREMENT,
-                                    OSM_ID      INTEGER NOT NULL,
-                                    TAGS        TEXT NOT NULL,
-                                    GEOMETRY    TEXT NOT NULL
-                                    )"""        
 
 SQL_INSERT_OSM_DATA="""insert into osm_data (PATCH_NAME, OSM_ID, TAGS, TYPE, GEOMETRY, DATA_DATE) values (?,?, ?, ?, ?, ?)"""
 

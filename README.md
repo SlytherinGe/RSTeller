@@ -71,7 +71,7 @@ If your are trying to download the dataset from mainland China, a [mirror endpoi
 
 To read the dataset in a python environment, you need to install the `webdataset` package. Details about the webdataset package can be found [here](https://github.com/webdataset/webdataset).
 
-```
+```bash
 pip install webdataset
 ```
 
@@ -79,15 +79,16 @@ pip install webdataset
 
 The dataset is arranged in the following way:
 
-```
+```text
 ├── RSTeller
-│   │── Patches0000.tar
-|   |   |── 607.jpg
-|   |   |── 607.json
-|   |   |──...
-│   ├── Patches0001.tar
-│   ├──...
-│   ├── Patches0240.tar
+|   ├── JPG
+│   │── |── train-000000.tar
+|   |   |   |── 726.jpg
+|   |   |   |── 726.json
+|   |   |   |── ...
+|   |   ├── train-000001.tar
+|   |   ├── ...
+|   |   ├── train-000261.tar
 ```
 
 The `Patches0000.tar` file contains the image patches, metadata and their captions. Each image patch is named as `607.jpg`, where `607` is the unique identifier of the image patch. The corresponding metadata and captions are stored in `607.json`.

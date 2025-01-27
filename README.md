@@ -1,6 +1,7 @@
 <div align="center">
 
 ### [RSTeller: Scaling Up Visual Language Modeling in Remote Sensing with Rich Linguistic Semantics from Openly Available Data and Large Language Models](https://arxiv.org/abs/2408.14744)
+
 Vision-Language Dataset for Remote Sensing
 </div>
 
@@ -26,7 +27,6 @@ We provide a set of samples for quick evaluation. Image patch, raw OSM tags and 
 
 ### 💡 Dataset Statistics
 
-
 <center>
 
 | **Attribute**                   | **Value**                                              |
@@ -43,11 +43,11 @@ We provide a set of samples for quick evaluation. Image patch, raw OSM tags and 
 
 </center>
 
-The geographical coverage of the dataset is limited to the United States due to the availability of NAIP imagery. 
+The geographical coverage of the dataset is limited to the United States due to the availability of NAIP imagery.
 
 ![geographical distribution](assets/caption_density.jpg)
 
-This dataset is annotated using two LLMs: Mixtral-Nemo-Instruct (12B) and Mixtral-Small-Instruct (22B). Detailed information about the [prompt templates](docs/prompt_templates.md) used for generating the captions is available. 
+This dataset is annotated using two LLMs: Mixtral-Nemo-Instruct (12B) and Mixtral-Small-Instruct (22B). Detailed information about the [prompt templates](docs/prompt_templates.md) used for generating the captions is available.
 
 We ran four instances of LLMs locally, with each LLM utilizing two instances for caption generation. The selection of the LLM was based on their availability at runtime. The distribution of annotations across different tasks and LLM annotators is illustrated below.
 
@@ -97,17 +97,19 @@ A sample json file is shown below:
 ```json
 {
     "metadata": {
-        "patch_id": 607,
+        "patch_id": 726,
         "image_name": "m_4107501_ne_18_060_20221108"
     },
     "annotations": [
         {
-            "task": 2,
-            "text": "In the remote sensing image patch, a roadway extends diagonally from the left-top to the right-bottom, curving sinuously. Running in a roughly northwest-southeast orientation, it spans approximately 339 meters within the ROI. Likely representing a public access road, it may indicate a rural or natural area. The road's name is Lower Rhiney Creek Road, and it has not been formally reviewed."
+            "task": 1,
+            "text": "At the top-center of the scene, an irregularly shaped wooded area stretches across more than one-third of the view, hinting at a dense and expansive forest filled with mature trees. Its boundary suggests that it extends beyond the visible frame, possibly creating a continuous woodland environment.",
+            "annotator": "mistralai/Mistral-Small-Instruct-2409"
         },
         {
             "task": 3,
-            "text": "The image reveals a roadway, likely a public access road, curving diagonally from left-top to right-bottom, spanning approximately 339 meters. This road may indicate a rural or natural area, potentially bordered by vegetation or fields."
+            "text": "At the north, an expansive wooded area stretching across over a third of the image suggests a dense, expansive forest filled with mature trees. The boundary hints at a continuous woodland beyond the visible frame.",
+            "annotator": "mistralai/Mistral-Nemo-Instruct-2407"
         }
     ]
 }

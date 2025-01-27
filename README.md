@@ -91,7 +91,7 @@ The dataset is arranged in the following way:
 |   |   ├── train-000261.tar
 ```
 
-The `Patches0000.tar` file contains the image patches, metadata and their captions. Each image patch is named as `607.jpg`, where `607` is the unique identifier of the image patch. The corresponding metadata and captions are stored in `607.json`.
+The `train-000000.tar` file contains image patches, metadata, and their captions. Each image patch is named using a unique identifier, such as `726.jpg`, where `726` serves as the identifier. This identifier can be used to query its [metadata](https://huggingface.co/datasets/SlytherinGe/RSTeller_metadata). A brief version of the metadata and captions is stored in `726.json`.
 
 A sample json file is shown below:
 

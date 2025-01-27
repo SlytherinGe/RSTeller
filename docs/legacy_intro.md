@@ -1,6 +1,6 @@
 <div align="center">
 
-### RSteller_legacy
+### RSTeller_legacy
 </div>
 
 ### ⚡ Introduction

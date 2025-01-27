@@ -1,7 +1,6 @@
 <div align="center">
 
-### [RSTeller: Scaling Up Visual Language Modeling in Remote Sensing with Rich Linguistic Semantics from Openly Available Data and Large Language Models](https://arxiv.org/abs/2408.14744)
-Vision-Language Dataset for Remote Sensing
+### RSteller_legacy
 </div>
 
 ### ⚡ Introduction
@@ -46,7 +45,7 @@ The dataset is wrapped in webdataset tar shards for easy access and efficient da
 
 #### Download
 
-The dataset is available on [huggingface](https://huggingface.co/datasets/SlytherinGe/RSTeller). You can download the dataset using the following command with the [huggingface-cli](https://hf-mirror.com/docs/huggingface_hub/guides/download#download-from-the-cli):
+The dataset is available on [huggingface](https://huggingface.co/datasets/SlytherinGe/RSTeller_legacy). You can download the dataset using the following command with the [huggingface-cli](https://hf-mirror.com/docs/huggingface_hub/guides/download#download-from-the-cli):
 
 ```bash
 huggingface-cli download --repo-type dataset --resume-download SlytherinGe/RSTeller --local-dir LOCAL_PATH/TO/YOUR/DATA

@@ -7,10 +7,11 @@ Vision-Language Dataset for Remote Sensing
 
 ### 🎉 News
 
+- **2025/01/28**: The latest version of the [RSTeller](https://huggingface.co/datasets/SlytherinGe/RSTeller) dataset and its [metadata](https://huggingface.co/datasets/SlytherinGe/RSTeller_metadata) are now avaliable on Hugging Face Datasets Hub.
 - **2025/01/27**: We are currently working on re-uploading the dataset to the Hugging Face Datasets Hub. The new version will be available soon. The legacy version has been moved to the [legacy repository](https://huggingface.co/datasets/SlytherinGe/RSTeller_legacy).
-- **2025/01/26**: We have completely regenerated the dataset using two larger LLMs: Mixtral-Nemo-Instruct (12B) and Mixtral-Small-Instruct (22B). This update introduces refined prompts and enhanced data quality. Please note that the selected image patches and OSM elements may vary from the previous release. For reference and study purposes, the [legacy version of the dataset](docs/legacy_intro.md) remains available. Additionally, the code for dataset generation has been released.
+- **2025/01/26**: We have completely regenerated the dataset using two larger LLMs: Mixtral-Nemo-Instruct (12B) and Mixtral-Small-Instruct (22B). This update introduces refined prompts and enhanced data quality. Please note that the selected image patches and OSM elements may vary from the previous release. For reference and study purposes, the introdcution to the [legacy version of the dataset](docs/legacy_intro.md) remains available. Additionally, the code for dataset generation has been released.
 - **2024/08/28**: A preprint version of our paper is now available on [arXiv](https://arxiv.org/abs/2408.14744).
-- **2024/08/27**: The dataset is now available on the [Hugging Face Datasets Hub](https://huggingface.co/datasets/SlytherinGe/RSTeller).
+- ~~**2024/08/27**: The dataset is now available on the [Hugging Face Datasets Hub](https://huggingface.co/datasets/SlytherinGe/RSTeller).~~
 - **2024/08/09**: We are uploading the dataset to the Hugging Face Datasets Hub.
 
 ### ⚡ Introduction

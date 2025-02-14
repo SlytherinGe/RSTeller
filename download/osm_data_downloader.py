@@ -141,22 +141,7 @@ def get_osm_working_boundary(center_pos, patch_dimension, download_time, patch_c
         tuple: (min_lat, min_lon, max_lat, max_lon) of the working boundary
     """
 
-    download_time_ticks = time.mktime(time.strptime(download_time, '%Y-%m-%d %H:%M:%S'))
-    change_time_ticks = time.mktime(time.strptime(args.date_change, '%Y-%m-%d'))
-    
-    function_index = 0 if download_time_ticks < change_time_ticks else 1
-    
-    if function_index == 0:
-        # Make a projection to discover the scale in degrees.
-        patch_proj = ee.Projection(patch_crs).atScale(scale).getInfo()
-
-        # Get scales in degrees out of the transform.
-        scale_x = patch_proj['transform'][0]
-        scale_y = patch_proj['transform'][4]
-        boundary = get_working_boundary_offset(center_pos, scale_x, scale_y, patch_dimension)
-        
-    else:
-        boundary = get_working_boundary_buffer(center_pos, scale, patch_dimension)
+    boundary = get_working_boundary_buffer(center_pos, scale, patch_dimension)
         
     return boundary
 
@@ -276,10 +261,8 @@ def get_data_for_db(data, patch_meta, db_path):
 if __name__ == '__main__':
     
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('--meta_db_path', type=str, default='/media/slytheringe/Disk/Gejunyao/develop/VLP/testdownloading/metadata.db')
-    argparser.add_argument('--osm_db_path', type=str, default='/media/slytheringe/Disk/Gejunyao/develop/VLP/testdownloading/osm.db')
-    argparser.add_argument('--water_polygons_path', type=str, default='/media/slytheringe/Disk/Gejunyao/develop/VLP/dev/water-polygons-split-4326')
-    argparser.add_argument('--date_change', type=str, default='2023-12-31')
+    argparser.add_argument('--meta_db_path', type=str, default='database/metadata.db')
+    argparser.add_argument('--osm_db_path', type=str, default='database/osm.db')
     argparser.add_argument('--num_workers', type=int, default=50)
     argparser.add_argument('--prefetch_size', type=int, default=4)
     argparser.add_argument('--service_account', type=str, help='The service account to use for GEE authentication.')

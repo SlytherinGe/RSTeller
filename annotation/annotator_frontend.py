@@ -24,7 +24,6 @@ from utils.interpret import (
     annotation_parser_prompt1_annotator1,
     annotation_parser_prompt4_annotator,
 )
-from prompt_toolkit import PromptSession
 
 from annotator_connector import AnnotatorConnector
 from processers.rewrite_data_producer import RewriteDataProducer
@@ -279,6 +278,8 @@ class ManagerProcess(Thread):
             self.tick_interval,
         )
 
+        # TODO: use the policy config or the arguments to set up the annotator connections dynamically
+        # for now, we use the following hard-coded connections
         self.add_annotator("localhost", 5000)
         self.add_annotator("localhost", 5001)
         self.add_annotator("localhost", 5002)

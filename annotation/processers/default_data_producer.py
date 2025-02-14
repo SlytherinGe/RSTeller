@@ -415,7 +415,7 @@ class DefaultDataProducer(BaseDataProducer):
 
 # test the data producer
 if __name__ == "__main__":
-    import time
+
     import ee
     import json
     ee.Initialize()

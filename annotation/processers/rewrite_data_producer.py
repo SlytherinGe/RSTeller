@@ -7,7 +7,6 @@ except:
     from processers.base import BaseDataProducer
 import os
 import pandas as pd
-import numpy as np
 import sqlite3
 import random
 
@@ -152,7 +151,6 @@ class RewriteDataProducer(BaseDataProducer):
 # test the RewriteDataProducer
 if __name__ == '__main__':
     import time
-    from queue import PriorityQueue
     
     db_root = '/mnt/FastDisk/GeJunYao/VLP/databases'
     annotation_db = 'annotation.db'

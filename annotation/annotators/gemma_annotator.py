@@ -17,7 +17,7 @@ class GemmaAnnotator(BaseAnnotator):
 
         # Pass the default decoding hyperparameters of Qwen2.5-7B-Instruct
         # max_tokens is for the maximum length for generation.
-        self.sampling_params = sampling_params = SamplingParams(
+        self.sampling_params = SamplingParams(
             temperature=0.8, max_tokens=512, top_p=0.95, top_k=1
         )
 

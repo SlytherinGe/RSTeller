@@ -173,15 +173,24 @@ The `shuffle` function is used to shuffle the dataset. The `decode` function is 
 
 We have provided all the code necessary, from [downloading raw data](download) to [distributed captioning](annotation), enabling you to create your own RSTeller dataset. Additionally, you can seamlessly integrate other image sources from the GEE platform and use alternative language models for caption generation.
 
+Before you start, you need to prepare a python environment that includes all the necessary packages. We recommend using conda for this purpose.
+
+```bash
+#!/bin/bash
+conda create -n rsteller python=3.10
+conda activate rsteller
+pip install -r requirements.txt
+```
+
 ### 📄 Citation
 
 If you find the dataset and our paper useful, please consider citing our paper:
 
 ```bibtex
-@misc{ge2024rstellerscalingvisuallanguage,
+@misc{ge2025rstellerscalingvisuallanguage,
       title={RSTeller: Scaling Up Visual Language Modeling in Remote Sensing with Rich Linguistic Semantics from Openly Available Data and Large Language Models}, 
-      author={Junyao Ge and Yang Zheng and Kaitai Guo and Jimin Liang},
-      year={2024},
+      author={Junyao Ge and Xu Zhang and Yang Zheng and Kaitai Guo and Jimin Liang},
+      year={2025},
       eprint={2408.14744},
       archivePrefix={arXiv},
       primaryClass={cs.CV},

@@ -28,46 +28,6 @@ from logging.handlers import RotatingFileHandler
 
 
 # TODO: the following are the example parameters for downloading images from GEE
-# we need argparser to parse the command line argument to get the parameters dynamically.
-
-
-DATABASE='SQLite'
-
-PATCH_FORMAT = 'PNG'
-
-DATASET='USDA/NAIP/DOQQ'
-
-START_DATE='2022-6-27'
-
-END_DATE='2022-6-28'
-# select resolution in meters.
-SCALE = 0.6
-
-FEATURES = ['R', 'G', 'B']
-
-WORKING_CRS = 'EPSG:4326'
-
-# Patch size in pixels.
-PATCH_SIZE = 448
-
-# parameters for normalizing image bands
-VIS_OPTION = {'visualizationOptions': {'ranges': [{'min': 0, 'max': 255}]}}
-
-# Number of workers for asynchronous downloading.
-N_WORKERS = 50
-
-# Specify the size and shape of patches expected by the model.
-KERNEL_SHAPE = [PATCH_SIZE, PATCH_SIZE]
-
-# The folder to save all images and database files
-WORKING_DIR = "/dir/to/save/images"
-DATABASE_DIR = 'metadata.db'
-# WORKING_DIR = "/mnt/SrvUserDisk/Gejunyao/VLP/test_downloader"
-
-# The starting index of the downloaded
-STARTING_IND = 0
-# The sample interval between patches
-SAMPLE_INTERVAL = 2
 
 COLLECTION_TABLE_INIT_CMD ="""
                             CREATE TABLE IF NOT EXISTS collection(
@@ -125,22 +85,19 @@ def get_image_scale(image):
     return image
 
 @_retry(tries=5, delay=1, backoff=2)
-def get_patch(coords, image):
+def get_patch(coords, image, request_fmt='PNG', scale=0.6, patch_size=448, features=None, vis_option=None):
     
     rand_delay = random()*0.5
     time.sleep(rand_delay)
     point = ee.Geometry.Point(coords)
-    region = point.buffer(PATCH_SIZE / 2 * SCALE).bounds()    
-    
-    request_fmt = PATCH_FORMAT
+    region = point.buffer(patch_size / 2 * scale).bounds()    
     
     request_dict = dict(
         region=region,
-        dimensions=f"{PATCH_SIZE}x{PATCH_SIZE}",
-        bands=FEATURES,
-        ranges=VIS_OPTION['visualizationOptions']['ranges']
+        dimensions=f"{patch_size}x{patch_size}",
+        bands=features,
+        ranges=vis_option['visualizationOptions']['ranges']
         )
-    
     
     if request_fmt.lower() in ['png', 'jpg']:
         request_fmt = request_fmt.lower()
@@ -217,10 +174,10 @@ def get_sample_patch_center_gpd(bounds, offset_x, offset_y, drop_rate=0.0):
     return valid_gpd_points
     
 @retry.Retry()
-def get_sample_patch_offsets(image, patch_intervals=1):
+def get_sample_patch_offsets(image, patch_intervals=1, patch_size=448, scale=0.6):
     
     image_centroid = image.geometry().centroid()
-    ref_roi = image_centroid.buffer(PATCH_SIZE / 2 * SCALE).bounds()    
+    ref_roi = image_centroid.buffer(patch_size / 2 * scale).bounds()    
     ref_roi_info = ref_roi.getInfo()
     ref_geometry = np.array(ref_roi_info['coordinates'][0])
     lon_min, lon_max = ref_geometry[:, 0].min(), ref_geometry[:, 0].max()
@@ -309,14 +266,14 @@ def get_patch_and_save(point, mongo_client):
     """_summary_
 
     Args:
-        point (Series): keys: ['x', 'y', 'geometry', 'selected_img', 'img_infos', 'working_dir_image', 'patch_format', 'patch_size', 'working_crs', 'features']
+        point (Series): keys: ['x', 'y', 'geometry', 'selected_img', 'img_infos', 'working_dir_image', 'patch_format', 'scale', 'patch_size', 'working_crs', 'features', 'vis_option']
 
     Returns:
         _type_: _description_
     """
-    selected_img, img_infos, working_dir_image, patch_format, patch_size, working_crs, features = \
-    point['selected_img'], eval(point['img_infos']), point['working_dir_image'], point['patch_format'], point['patch_size'], point['working_crs'], eval(point['features'])
-    response = get_patch((point['geometry'].xy[0][0], point['geometry'].xy[1][0]), selected_img)
+    selected_img, img_infos, working_dir_image, patch_format, scale, patch_size, working_crs, features, vis_option = \
+    point['selected_img'], eval(point['img_infos']), point['working_dir_image'], point['patch_format'], point['scale'], point['patch_size'], point['working_crs'], eval(point['features']), eval(point['vis_option'])
+    response = get_patch((point['geometry'].xy[0][0], point['geometry'].xy[1][0]), selected_img, patch_format, scale, patch_size, features, vis_option)
     timestamp = time.localtime()
     download_time = time.strftime("%Y-%m-%d %H:%M:%S", timestamp)
     # save the patch image
@@ -387,22 +344,22 @@ def get_patch_and_save(point, mongo_client):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Download images from GEE and save them to disk.')
-    parser.add_argument('--database', type=str, default=DATABASE, help='The database to use for storing downloaded images.')
-    parser.add_argument('--patch_format', type=str, default=PATCH_FORMAT, help='The format of the downloaded patches.')
-    parser.add_argument('--dataset', type=str, default=DATASET, help='The dataset to download images from.')
+    parser.add_argument('--database', type=str, default='SQLite', help='The database to use for storing downloaded images.')
+    parser.add_argument('--patch_format', type=str, default='PNG', help='The format of the downloaded patches.')
+    parser.add_argument('--dataset', type=str, default='USDA/NAIP/DOQQ', help='The dataset to download images from.')
     parser.add_argument('--start_date', type=str, default='2022-3-29', help='The start date of the image collection.')
     parser.add_argument('--end_date', type=str, default='2022-4-5', help='The end date of the image collection. This is not inclusive.')
-    parser.add_argument('--scale', type=float, default=SCALE, help='The scale of the downloaded images in meters.')
-    parser.add_argument('--features', type=str, default=','.join(FEATURES), help='The features to download.')
-    parser.add_argument('--working_crs', type=str, default=WORKING_CRS, help='The CRS of the downloaded images.')
-    parser.add_argument('--patch_size', type=int, default=PATCH_SIZE, help='The size of the downloaded patches in pixels.')
-    parser.add_argument('--vis_option', type=str, default=str(VIS_OPTION), help='The visualization options for normalizing the image bands.')
+    parser.add_argument('--scale', type=float, default=0.6, help='The scale of the downloaded images in meters.')
+    parser.add_argument('--features', type=str, default=','.join(['R', 'G', 'B']), help='The features to download.')
+    parser.add_argument('--working_crs', type=str, default='EPSG:4326', help='The CRS of the downloaded images.')
+    parser.add_argument('--patch_size', type=int, default=448, help='The size of the downloaded patches in pixels.')
+    parser.add_argument('--vis_option', type=str, default=str({'visualizationOptions': {'ranges': [{'min': 0, 'max': 255}]}}), help='The visualization options for normalizing the image bands.')
     parser.add_argument('--n_workers', type=int, default=50, help='The number of workers for asynchronous downloading.')
-    parser.add_argument('--kernel_shape', type=str, default=str(KERNEL_SHAPE), help='The shape of the patches expected by the model.')
+    parser.add_argument('--kernel_shape', type=str, default=str([448, 448]), help='The shape of the patches expected by the model.')
     parser.add_argument('--working_dir', type=str, default='./database', help='The folder to save all images and database files.')
-    parser.add_argument('--database_dir', type=str, default=DATABASE_DIR, help='The folder to save the downloaded database files.')
-    parser.add_argument('--starting_ind', type=int, default=STARTING_IND, help='The starting index of the downloaded.')
-    parser.add_argument('--sample_interval', type=int, default=SAMPLE_INTERVAL, help='The sample interval between patches.')
+    parser.add_argument('--database_dir', type=str, default='metadata.db', help='The folder to save the downloaded database files.')
+    parser.add_argument('--starting_ind', type=int, default=0, help='The starting index of the downloaded.')
+    parser.add_argument('--sample_interval', type=int, default=2, help='The sample interval between patches.')
     parser.add_argument('--log_file', type=str, default='downloader.log', help='The log file to save the downloading process.')
     parser.add_argument('--db_timeout', type=int, default=60, help='The timeout for the database connection in seconds.')
     parser.add_argument('--drop_rate', type=float, default=0.9, help='The rate of dropping some points.')
@@ -433,6 +390,10 @@ if __name__ == '__main__':
                                     else os.path.join(working_dir, args.log_file)
     db_timeout = args.db_timeout
     drop_rate = args.drop_rate
+
+    # check if the folder exists, otherwise create it
+    if not os.path.exists(working_dir):
+        os.mkdir(working_dir)
 
     service_account = args.service_account
     credentials = ee.ServiceAccountCredentials(service_account, args.credentials_file)
@@ -486,11 +447,6 @@ if __name__ == '__main__':
     if end_date < start_date:
         logger.error('The start date is later than the end date!')
         sys.exit(1)
-
-
-    # check if the folder exists, otherwise create it
-    if not os.path.exists(working_dir):
-        os.mkdir(working_dir)
 
     # init the data base
     database_file = database_dir
@@ -562,7 +518,7 @@ if __name__ == '__main__':
             logger.info("Starting to prepare patches for the {} of {} IMAGE...".format(i+1, download_n_imgs))
             try:
                 img_infos = get_image_infos(selected_img)
-                offset_x, offset_y = get_sample_patch_offsets(selected_img, sample_interval)
+                offset_x, offset_y = get_sample_patch_offsets(selected_img, sample_interval, patch_size, scale)
                 img_infos.update({'SAMPLE_INTERVAL':sample_interval})
             except Exception as exc:
                 logger.error("Encountered error downloading {} of {} IMAGE. {}".format(i+1, download_n_imgs, str(exc)))
@@ -600,6 +556,8 @@ if __name__ == '__main__':
             valid_gpd_points_single['img_infos'] = str(img_infos)
             valid_gpd_points_single['working_dir_image'] = working_dir_image
             valid_gpd_points_single['patch_format'] = patch_format
+            valid_gpd_points_single['scale'] = scale
+            valid_gpd_points_single['vis_option'] = str(vis_option)
             valid_gpd_points_single['patch_size'] = patch_size
             valid_gpd_points_single['working_crs'] = working_crs
             valid_gpd_points_single['features'] = str(features)
@@ -617,7 +575,7 @@ if __name__ == '__main__':
         logger.info("Starting to download patches of date {}...".format(current_date_str))
         with concurrent.futures.ThreadPoolExecutor(max_workers=n_workers) as executor:
             # Start the load operations and mark each future with its URL
-            future_to_patch = {executor.submit(get_patch_and_save, point): point for _, point in valid_gpd_points.iterrows()}
+            future_to_patch = {executor.submit(get_patch_and_save, point, mongo_client): point for _, point in valid_gpd_points.iterrows()}
             patch_progress_bar = tqdm(total=len(valid_gpd_points), leave=False, desc='Downloading patches')
             for future in concurrent.futures.as_completed(future_to_patch):
                 point = future_to_patch.pop(future)

@@ -22,7 +22,7 @@ Use the following script to download image patches from the USDA NAIP (DOQQ) dat
 
 ```bash
 #!/bin/bash
-python tools/ee_image_downloader.py \
+python download/ee_image_downloader.py \
   --start_date "2021-8-1" \
   --end_date "2021-10-1" \
   --working_dir "./database" \
@@ -60,7 +60,7 @@ Use the following script to download OSM data (via the Overpass API) correspondi
 
 ```bash
 #!/bin/bash
-python tools/osm_data_downloader.py \
+python download/osm_data_downloader.py \
   --meta_db_path "database/metadata.db" \
   --osm_db_path "database/osm.db" \
   --service_account "scriptlogin@your-project.iam.gserviceaccount.com" \
